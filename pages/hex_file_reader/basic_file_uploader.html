@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hex file 📁</title>
+</head>
+<body>
+  <header><input type="file" name="file-selector" id="file-selector" accept=".hex"></header>
+</body>
+<script>
+  // this function will process the file
+  async function fileSelected(eventInfo) {
+    const file = eventInfo.target.files[0]
+    const text = await file.text()
+    alert(text);
+    const lines = text.split("\n")
+    console.log("lines:", lines)
+  }
+  // register 'fileSelected' callback
+  document.getElementById("file-selector").onchange = fileSelected;
+</script>
+</html>
