@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hex file 📁</title>
+</head>
+<body>
+  <header><input type="file" name="file-selector" id="file-selector" accept=".hex"></header>
+</body>
+
+<!-- parsing as text with newline characters, the usual way. -->
+<script>
+
+  function parseHexLine(line) {
+    if (line.length < 10) return undefined
+    const count = parseInt(line.substr(0, 2), 16); if (count == NaN) return undefined;
+    if (line.length !== (count * 2 + 10)) return undefined;
+    const address = parseInt(line.substr(2, 4), 16); if (address == NaN) return undefined;
+    const type = parseInt(line.substr(6, 2), 16); if (type == NaN) return undefined;
+    const data = line.substr(8, count * 2)
+    const check = line.substr(8 + count * 2, 2)
+    console.log('count', count, 'address', address, 'type', type, 'data', data, 'check', check);
+  }
+
+  async function parseHexFile(text) {
+    let lines = text.split("\n")
+    lines = lines.filter( (line) => line.includes(":"));
+    // start from and remove the start character ':', and filter to a even number of characters
+    lines = lines.map(line => {
+      line = line.slice(line.indexOf(":") + 1)
+      if(line.length % 2) line = line.slice(0, line.length - 1)
+      parseHexLine(line)
+      return line.toUpperCase();
+    })
+    //console.log(lines);
+  }
+
+</script>
+<script>
+  
+  // this function will process the file
+  async function fileSelected(eventInfo) {
+    const file = eventInfo.target.files[0]
+    const text = await file.text()
+    alert(text);
+    parseHexFile(text)
+  }
+
+  // register 'fileSelected' callback
+  document.getElementById("file-selector").onchange = fileSelected;
+</script>
+</html>
