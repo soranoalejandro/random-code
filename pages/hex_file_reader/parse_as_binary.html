@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hex file 📁</title>
+</head>
+<body>
+  <header><input type="file" name="file-selector" id="file-selector" accept=".hex"></header>
+</body>
+
+<!-- binary parser, single pass, faster -->
+<script>
+
+  // get single hex digit from ascii byte value
+  function toDigit(char) {
+    let digit = char - 48; if (digit > 9) digit -= 7;
+    if ((digit > 15) || (digit < 0)) return -1;
+    return digit
+  }
+
+  async function parseHexFromBuffer(buffer) {
+    const u8 = new Uint8Array(buffer)
+    const result = []
+    const startCharacter = ":".charCodeAt(0)
+    let index = 0; let checksum = 0;
+
+    // read a single byte, advance index, update checksum
+    function readByte(buffer) {
+      const value = toDigit(buffer[index++]) * 16 + toDigit(buffer[index++]);
+      checksum += value; return value;
+    }
+
+    // decode lines
+    do {
+      let start = u8.indexOf(startCharacter, index) // find a start character
+      if (start === -1) break;   // no more start characters
+      index = start + 1;  // advance after the ':' character
+      if (u8.length - index < 10) break;  // less than 10 characters left
+      checksum = 0;
+      const count = readByte(u8)
+      const address = readByte(u8) * 256 + readByte(u8)
+      const type = readByte(u8)
+      const data = []
+      let dataBytes = count;
+      while (dataBytes-- > 0) data.push(readByte(u8));
+      const check = readByte(u8)
+      
+      // valid line
+      checksum &= 0xFF
+      if (checksum  === 0) {
+        if (type == 0) result.push({address, data})
+      } else {
+        alert(`Record checksum failed at character ${index}.`)
+      }
+
+      // make a pretty format for printing
+      const hexData = data.map( (number) => number.toString(16).padStart(2, "0").toUpperCase() )
+      console.log('count', count, 'address', address.toString(16).padStart(4, "0").toUpperCase(), 'type', type, 'data:', hexData.join(", "), 'check', check.toString(16).padStart(2, "0").toUpperCase());
+    } while (index < u8.length);
+    
+    // result array
+    console.log('result:', result)
+  }
+
+</script>
+<script>
+  
+  // this function will process the file
+  async function fileSelected(eventInfo) {
+    const file = eventInfo.target.files[0]
+    const text = await file.text()
+    alert(text);
+    const arrayBuffer = await file.arrayBuffer()
+    parseHexFromBuffer(arrayBuffer);
+    
+    // clearing the value allows the event to trigger againg if the user selects the same file as before.
+    eventInfo.target.value = null;
+  }
+
+  // register 'fileSelected' callback
+  document.getElementById("file-selector").onchange = fileSelected;
+</script>
+</html>
