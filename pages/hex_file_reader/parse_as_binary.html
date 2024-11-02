@@ -73,9 +73,8 @@
     alert(text);
     const arrayBuffer = await file.arrayBuffer()
     parseHexFromBuffer(arrayBuffer);
-    
     // clearing the value allows the event to trigger againg if the user selects the same file as before.
-    eventInfo.target.value = null;
+    eventInfo.target.value = null
   }
 
   // register 'fileSelected' callback

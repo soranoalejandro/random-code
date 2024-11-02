@@ -16,6 +16,8 @@
     alert(text);
     const lines = text.split("\n")
     console.log("lines:", lines)
+    // clearing the value allows the event to trigger againg if the user selects the same file as before.
+    eventInfo.target.value = null
   }
   // register 'fileSelected' callback
   document.getElementById("file-selector").onchange = fileSelected;
