@@ -47,7 +47,7 @@ Looping trough arrays in a for loop will have the following syntax, allowing nes
 
 `array = [12, 13, 14]`
 
-```
+```python
 for array, item {
 
   # item will have the values 12, 13, 14
@@ -65,7 +65,7 @@ Nested arrays can be accessed by adding more element names after the comma.
 for colors, color, channel {
   # this will access each value in the array
   # for example for brightness correction to all channels 
-  channel = channel * 0.25f
+  channel = channel * 0.25
 }
 ```
 If we want to get the current color and all its channels, the color variable will hold the current [ , , ] values for the current iteration.
