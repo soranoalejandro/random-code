@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor 📝</title>
+</head>
+<body>
+
+<header><H2 style="padding-left: 0.5%;">Editor 📝</H2></header>
+
+<main>
+<span title="Input code" style="color:var(--orange); padding: 0.5%;">code:</span>
+<div id="input" autofocus autocorrect="off" autocomplete="off" contenteditable="plaintext-only" spellcheck="false"># Sample code</div>
+</main>
+
+<aside>
+<span title="Output code" style="color: var(--orange); padding: 0.5%">output:<br></span>
+<div id="output" class="prevent-select"></div>
+</aside>
+
+</body>
+<script>
+  const input = document.getElementById("input")
+  const output = document.getElementById("output")
+  // set input cursor to the end
+  const moveCursorToEnd = () => {
+    const range = document.createRange();
+    const selection = window.getSelection();
+    range.setStart(input, input.childNodes.length);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
+  // get text from input
+  function inputEvent() {
+    input.normalize()
+    console.log(input.textContent);
+    output.textContent = input.textContent
+  }
+  // startup code
+  input.oninput = () => setTimeout(inputEvent, 20);
+  moveCursorToEnd()
+  inputEvent()
+</script>
+<style>
+  :root {
+    --blue: #1e90ff;
+    --white: #dfdbcb;
+    --orange: #da871c;
+    --dark: #2f2f2f;
+    --dark2: #1e1e1e;
+    --black: #151515;
+  }
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  body {
+    min-height: 96vh;
+    background-color: var(--black);
+  }
+  header {
+    color: var(--dark2);
+    background-color:violet;
+  }
+  main {
+    color: var(--white);
+    background-color: var(--dark2);
+    font-size: large;
+    padding: 0.5%;
+  }
+  aside {
+    color: gray;
+    background-color: rgb(22, 20, 22);
+    font-size: large;
+    padding: 0.5%;
+  }
+  #input, #output {
+    width: 100%;
+    height: 100%;
+    padding: 0.5%;
+    overflow: auto;
+    outline: 0px solid transparent;
+    white-space: pre;
+  }
+  #output {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+  }
+  .prevent-select {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+  }
+</style>
+</html>
